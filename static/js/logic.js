@@ -28,7 +28,7 @@ d3.json(queryUrl).then(function(data) {
         color: "#000",
         weight: 1,
         opacity: 1,
-        fillOpacity: 0.6
+        fillOpacity: 0.7
     };
 
     function pointToLayer(geoJsonPoint, latlng){
@@ -38,7 +38,9 @@ d3.json(queryUrl).then(function(data) {
     // Give each feature a popup describing the place and time of the earthquake
     function onEachFeature(feature, layer) {
         layer.bindPopup("<h3>" + feature.properties.place +
-        "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
+        "</h3><hr><p>" + new Date(feature.properties.time) + 
+        "</p><hr><p> Magnitude: " + feature.properties.mag + "</p>"
+        );
     }
 
     // Create a GeoJSON layer containing the features array on the earthquakeData object
@@ -46,17 +48,23 @@ d3.json(queryUrl).then(function(data) {
     L.geoJSON(data, {
         style: function(feature) {
             var qColor;
-            if (feature.properties.mag <= 2) {
-                qColor = '#035afc'
+            if (feature.properties.mag <= 1) {
+                qColor = '#b7d7e8'
             }
-            else if (feature.properties.mag > 2 && feature.properties.mag <= 4) {
-                qColor = '#02bfa9'
+            else if (feature.properties.mag > 1 && feature.properties.mag <= 2) {
+                qColor = '#92a8d1'
             }
-            else if (feature.properties.mag > 4 && feature.properties.mag <= 6) {
-                qColor = '#058f03'
+            else if (feature.properties.mag > 2 && feature.properties.mag <= 3) {
+                qColor = '#d6d4e0'
+            }
+            else if (feature.properties.mag > 3 && feature.properties.mag <= 4) {
+                qColor = '#b8a9c9'
+            }
+            else if (feature.properties.mag > 4 && feature.properties.mag <= 5) {
+                qColor = '#6b5b95'
             }
             else {
-                qColor = '#344001'
+                qColor = '#622569'
             };
 
             
@@ -70,5 +78,32 @@ d3.json(queryUrl).then(function(data) {
         pointToLayer: pointToLayer
     }).addTo(map);
 
+    // Create a legend on the bottom right corner of the map
+    function colorLegend(m) {
+        return m > 5 ? '#622569' :
+        m > 4 ? '#6b5b95' :
+        m > 3 ? '#b8a9c9' :
+        m > 2 ? '#d6d4e0' :
+        m > 1 ? '#92a8d1' :
+        m > 0 ? '#b7d7e8':
+        '#fff9eb';
+    };
+
+    var legend = L.control({
+        position: "bottomright"
+    });
+
+    legend.onAdd = function() {
+        var div = L.DomUtil.create('div', 'info legend');
+        
+        mag = [0,1,2,3,4,5];
+        
+        for (var i = 0; i < mag.length; i++) {
+            div.innerHTML += '<i style="background:' + colorLegend(mag[i] + 1) + '"></i>' + mag[i] + (mag[i+1] ? '&ndash;' + mag[i+1] + '<br>' : '+');
+        }
+        return div;
+    };
+
+    legend.addTo(map);
 });
 
