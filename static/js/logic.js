@@ -7,12 +7,11 @@ var map = L.map("map", {
     zoom: 5
 });
 
-// Adding tile layer
-L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-    maxZoom: 18,
-    id: "mapbox.streets",
-    accessToken: API_KEY
+L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"http://mapbox.com\">Mapbox</a>",
+  maxZoom: 18,
+  id: "mapbox.light",
+  accessToken: API_KEY
 }).addTo(map);
 
 // Perform a GET request to the query URL
@@ -23,7 +22,7 @@ d3.json(queryUrl).then(function(data) {
 
     // Give circle markers for each earthquake points
     var geojsonMarkerOptions = {
-        radius: 8,
+        radius: 7,
         fillColor: "#ff7800",
         color: "#000",
         weight: 1,
@@ -69,7 +68,7 @@ d3.json(queryUrl).then(function(data) {
 
             
             return {
-                radius: feature.properties.mag*7,
+                radius: feature.properties.mag*6,
                 color: qColor,
                 fillColor: qColor
             }
